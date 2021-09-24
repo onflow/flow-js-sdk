@@ -39,7 +39,7 @@
     "@onflow/interaction": "0.0.11",
     "@onflow/rlp": "0.0.3",
     "@onflow/sdk": "^0.0.54",
-    "@onflow/types": "^0.0.4",
+    "@onflow/types": "^0.0.5",
     "@onflow/util-actor": "0.0.2",
     "@onflow/util-address": "0.0.0",
     "@onflow/util-invariant": "0.0.0",
