@@ -45,12 +45,13 @@ export const blockHeaderHandler = createSubscriptionHandler<{
       sendData(data: BlockHeaderDataModel) {
         // Parse the raw data
         const parsedData: BlockHeaderData = {
+          // TODO: We do not know the data model types yet
           blockHeader: {
             id: data.header.id,
             height: data.header.height,
             timestamp: data.header.timestamp,
             chainId: data.header.chain_id,
-          },
+          } as any,
         }
 
         // Update the resume args
