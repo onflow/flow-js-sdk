@@ -4,7 +4,7 @@
   ],
   "scripts": {
     "build": "lerna run build",
-    "start": "npm run build && lerna run start --parallel",
+    "start": "npm run build && lerna run start --parallel --stream",
     "test": "jest",
     "release": "npm run build && npm run changeset publish",
     "changeset": "changeset",
