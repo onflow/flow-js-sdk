@@ -26,12 +26,32 @@ export type SubscriptionSchema = {
       }
     }
   >
+  [SubscriptionTopic.EVENTS]: SchemaItem<
+    // TODO: We do not know the data model types yet
+    (
+      | {
+          startBlockId: string
+        }
+      | {
+          startBlockHeight: number
+        }
+      | {}
+    ) & {
+      filter: EventFilter
+    },
+    {
+      event: Omit<Event, "data"> & {
+        payload: string
+      }
+    }
+  >
 }
 
 export enum SubscriptionTopic {
   BLOCKS = "blocks",
   BLOCK_DIGESTS = "block_digests",
   ACCOUNT_STATUSES = "account_statuses",
+  EVENTS = "events",
 }
 
 type BlockArgs =
