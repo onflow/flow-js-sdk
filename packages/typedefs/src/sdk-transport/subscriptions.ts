@@ -1,4 +1,4 @@
-import {Block, BlockDigest} from ".."
+import {Block, BlockDigest, Event, EventFilter} from ".."
 
 export type SubscriptionSchema = {
   [SubscriptionTopic.BLOCKS]: SchemaItem<
@@ -13,11 +13,25 @@ export type SubscriptionSchema = {
       blockDigest: BlockDigest
     }
   >
+  [SubscriptionTopic.ACCOUNT_STATUSES]: SchemaItem<
+    {
+      accountStatusFilter: EventFilter
+    },
+    {
+      // TODO: We do not know the data model types yet
+      accountStatus: {
+        blockId: string
+        height: number
+        account_events: Event[]
+      }
+    }
+  >
 }
 
 export enum SubscriptionTopic {
   BLOCKS = "blocks",
   BLOCK_DIGESTS = "block_digests",
+  ACCOUNT_STATUSES = "account_statuses",
 }
 
 type BlockArgs =
