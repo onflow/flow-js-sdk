@@ -7,7 +7,7 @@ type EventsArgs =
 type EventsData =
   SdkTransport.SubscriptionData<SdkTransport.SubscriptionTopic.EVENTS>
 
-type EventsArgsModel = (
+export type EventsArgsModel = (
   | {
       start_block_id: string
     }
