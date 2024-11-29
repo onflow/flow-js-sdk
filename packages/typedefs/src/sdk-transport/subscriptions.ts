@@ -1,4 +1,4 @@
-import {Block, BlockDigest} from ".."
+import {Block, BlockDigest, BlockHeader} from ".."
 
 export type SubscriptionSchema = {
   [SubscriptionTopic.BLOCKS]: SchemaItem<
@@ -13,11 +13,18 @@ export type SubscriptionSchema = {
       blockDigest: BlockDigest
     }
   >
+  [SubscriptionTopic.BLOCK_HEADERS]: SchemaItem<
+    BlockArgs,
+    {
+      blockHeader: BlockHeader
+    }
+  >
 }
 
 export enum SubscriptionTopic {
   BLOCKS = "blocks",
   BLOCK_DIGESTS = "block_digests",
+  BLOCK_HEADERS = "block_headers",
 }
 
 type BlockArgs =
