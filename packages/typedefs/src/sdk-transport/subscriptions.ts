@@ -14,15 +14,25 @@ export type SubscriptionSchema = {
     }
   >
   [SubscriptionTopic.ACCOUNT_STATUSES]: SchemaItem<
-    {
-      accountStatusFilter: EventFilter
+    (
+      | {
+          startBlockId: string
+        }
+      | {
+          startBlockHeight: number
+        }
+      | {}
+    ) & {
+      filter: EventFilter
     },
     {
       // TODO: We do not know the data model types yet
       accountStatus: {
         blockId: string
         height: number
-        account_events: Event[]
+        accountEvents: (Omit<Event, "data"> & {
+          payload: string
+        })[]
       }
     }
   >

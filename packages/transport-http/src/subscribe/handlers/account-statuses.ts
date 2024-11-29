@@ -1,47 +1,71 @@
 import {SdkTransport} from "@onflow/typedefs"
-import {BlockArgsModel, createSubscriptionHandler} from "./types"
+import {createSubscriptionHandler} from "./types"
+import {EventsArgsModel} from "./events"
 
-type BlockDigestArgsModel = BlockArgsModel
+type AccountStatusesArgs =
+  SdkTransport.SubscriptionArguments<SdkTransport.SubscriptionTopic.ACCOUNT_STATUSES>
 
-type BlockDigestDataModel = {
+type AccountStatusesData =
+  SdkTransport.SubscriptionData<SdkTransport.SubscriptionTopic.ACCOUNT_STATUSES>
+
+type AccountStatusesArgsModel = EventsArgsModel
+
+type AccountStatusesDataModel = {
   // TODO: We do not know the data model types yet
-  block_digest: {
-    id: string
+  account_status: {
+    block_id: string
     height: number
-    timestamp: string
+    account_events: {
+      block_id: string
+      block_height: number
+      block_timestamp: string
+      type: string
+      transaction_id: string
+      transaction_index: number
+      event_index: number
+      payload: string
+    }[]
   }
 }
 
 export const accountStatusesHandler = createSubscriptionHandler<{
-  Topic: SdkTransport.SubscriptionTopic.BLOCK_DIGESTS
-  Args: SdkTransport.SubscriptionArguments<SdkTransport.SubscriptionTopic.BLOCK_DIGESTS>
-  Data: SdkTransport.SubscriptionData<SdkTransport.SubscriptionTopic.BLOCK_DIGESTS>
-  ArgsModel: BlockDigestArgsModel
-  DataModel: BlockDigestDataModel
+  Topic: SdkTransport.SubscriptionTopic.ACCOUNT_STATUSES
+  Args: SdkTransport.SubscriptionArguments<SdkTransport.SubscriptionTopic.ACCOUNT_STATUSES>
+  Data: SdkTransport.SubscriptionData<SdkTransport.SubscriptionTopic.ACCOUNT_STATUSES>
+  ArgsModel: AccountStatusesArgsModel
+  DataModel: AccountStatusesDataModel
 }>({
-  topic: SdkTransport.SubscriptionTopic.BLOCK_DIGESTS,
+  topic: SdkTransport.SubscriptionTopic.ACCOUNT_STATUSES,
   createSubscriber: (initialArgs, onData, onError) => {
-    let resumeArgs: SdkTransport.SubscriptionArguments<SdkTransport.SubscriptionTopic.BLOCK_DIGESTS> =
-      {
-        ...initialArgs,
-      }
+    let resumeArgs: AccountStatusesArgs = {
+      ...initialArgs,
+    }
 
     return {
-      sendData(data: BlockDigestDataModel) {
+      sendData(data: AccountStatusesDataModel) {
         // Parse the raw data
-        const parsedData: SdkTransport.SubscriptionData<SdkTransport.SubscriptionTopic.BLOCK_DIGESTS> =
-          {
-            blockDigest: {
-              id: data.block_digest.id,
-              height: data.block_digest.height,
-              timestamp: data.block_digest.timestamp,
-            },
-          }
+        const parsedData: AccountStatusesData = {
+          accountStatus: {
+            blockId: data.account_status.block_id,
+            height: data.account_status.height,
+            accountEvents: data.account_status.account_events.map(event => ({
+              blockId: event.block_id,
+              blockHeight: event.block_height,
+              blockTimestamp: event.block_timestamp,
+              type: event.type,
+              transactionId: event.transaction_id,
+              transactionIndex: event.transaction_index,
+              eventIndex: event.event_index,
+              payload: event.payload,
+            })),
+          },
+        }
 
         // Update the resume args
         resumeArgs = {
-          blockStatus: resumeArgs.blockStatus,
-          startBlockId: data.block_digest.id + 1,
+          ...resumeArgs,
+          startBlockHeight: data.account_status.height + 1,
+          startBlockId: undefined,
         }
 
         onData(parsedData)
@@ -49,11 +73,11 @@ export const accountStatusesHandler = createSubscriptionHandler<{
       sendError(error: Error) {
         onError(error)
       },
-      encodeArgs(
-        args: SdkTransport.SubscriptionArguments<SdkTransport.SubscriptionTopic.BLOCK_DIGESTS>
-      ) {
-        let encodedArgs: BlockArgsModel = {
-          block_status: args.blockStatus,
+      encodeArgs(args: AccountStatusesArgs) {
+        let encodedArgs: AccountStatusesArgsModel = {
+          event_types: args.filter?.eventTypes,
+          addresses: args.filter?.addresses,
+          contracts: args.filter?.contracts,
         }
 
         if ("startBlockHeight" in args) {
