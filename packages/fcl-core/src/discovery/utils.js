@@ -9,6 +9,7 @@ export const makeDiscoveryServices = async () => {
 
 export async function getDiscoveryService(service) {
   const discoveryAuthnInclude = await config.get("discovery.authn.include", [])
+  const discoveryAuthnExclude = await config.get("discovery.authn.exclude", [])
   const discoveryFeaturesSuggested = await config.get(
     "discovery.features.suggested",
     []
@@ -36,6 +37,7 @@ export async function getDiscoveryService(service) {
     endpoint,
     method,
     discoveryAuthnInclude,
+    discoveryAuthnExclude,
     discoveryFeaturesSuggested,
   }
 }

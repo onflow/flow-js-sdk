@@ -14,6 +14,7 @@ export async function getServices({types}) {
   )
 
   const include = await config.get("discovery.authn.include", [])
+  const exclude = await config.get("discovery.authn.exclude", [])
   const url = new URL(endpoint)
 
   return fetch(url, {
@@ -25,6 +26,7 @@ export async function getServices({types}) {
       type: types,
       fclVersion: VERSION,
       include,
+      exclude,
       features: {
         suggested: await config.get("discovery.features.suggested", []),
       },
