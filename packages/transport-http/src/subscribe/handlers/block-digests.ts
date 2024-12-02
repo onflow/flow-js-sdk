@@ -16,13 +16,13 @@ type BlockDigestsDataDto = {
   }
 }
 
-type BlockDigestArgsDto = BlockArgsModel
+type BlockDigestsArgsDto = BlockArgsModel
 
 export const blockDigestsHandler = createSubscriptionHandler<{
   Topic: SdkTransport.SubscriptionTopic.BLOCK_DIGESTS
   Args: BlockDigestsArgs
   Data: BlockDigestsData
-  ArgsDto: BlockDigestArgsDto
+  ArgsDto: BlockDigestsArgsDto
   DataDto: BlockDigestsDataDto
 }>({
   topic: SdkTransport.SubscriptionTopic.BLOCK_DIGESTS,
@@ -32,7 +32,7 @@ export const blockDigestsHandler = createSubscriptionHandler<{
     }
 
     return {
-      sendData(data: BlockDigestsDataDto) {
+      onData(data: BlockDigestsDataDto) {
         // Parse the raw data
         const parsedData: BlockDigestsData = {
           blockDigest: {
@@ -50,11 +50,11 @@ export const blockDigestsHandler = createSubscriptionHandler<{
 
         onData(parsedData)
       },
-      sendError(error: Error) {
+      onError(error: Error) {
         onError(error)
       },
-      encodeArgs(args: BlockDigestsArgs) {
-        let encodedArgs: BlockDigestArgsDto = {
+      argsToDto(args: BlockDigestsArgs) {
+        let encodedArgs: BlockDigestsArgsDto = {
           block_status: args.blockStatus,
         }
 
