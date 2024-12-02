@@ -13,6 +13,29 @@ export type SubscriptionSchema = {
       blockDigest: BlockDigest
     }
   >
+  [SubscriptionTopic.ACCOUNT_STATUSES]: SchemaItem<
+    (
+      | {
+          startBlockId: string
+        }
+      | {
+          startBlockHeight: number
+        }
+      | {}
+    ) & {
+      filter: EventFilter
+    },
+    {
+      // TODO: We do not know the data model types yet
+      accountStatus: {
+        blockId: string
+        height: number
+        accountEvents: (Omit<Event, "data"> & {
+          payload: string
+        })[]
+      }
+    }
+  >
   [SubscriptionTopic.EVENTS]: SchemaItem<
     // TODO: We do not know the data model types yet
     (
@@ -37,6 +60,7 @@ export type SubscriptionSchema = {
 export enum SubscriptionTopic {
   BLOCKS = "blocks",
   BLOCK_DIGESTS = "block_digests",
+  ACCOUNT_STATUSES = "account_statuses",
   EVENTS = "events",
 }
 
