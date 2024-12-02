@@ -1,6 +1,6 @@
 import {SdkTransport} from "@onflow/typedefs"
 import {createSubscriptionHandler} from "./types"
-import {EventsArgsModel} from "./events"
+import {EventsArgsDto} from "./events"
 
 type AccountStatusesArgs =
   SdkTransport.SubscriptionArguments<SdkTransport.SubscriptionTopic.ACCOUNT_STATUSES>
@@ -8,9 +8,9 @@ type AccountStatusesArgs =
 type AccountStatusesData =
   SdkTransport.SubscriptionData<SdkTransport.SubscriptionTopic.ACCOUNT_STATUSES>
 
-type AccountStatusesArgsModel = EventsArgsModel
+type AccountStatusesArgsDto = EventsArgsDto
 
-type AccountStatusesDataModel = {
+type AccountStatusesDataDto = {
   // TODO: We do not know the data model types yet
   account_status: {
     block_id: string
@@ -32,8 +32,8 @@ export const accountStatusesHandler = createSubscriptionHandler<{
   Topic: SdkTransport.SubscriptionTopic.ACCOUNT_STATUSES
   Args: SdkTransport.SubscriptionArguments<SdkTransport.SubscriptionTopic.ACCOUNT_STATUSES>
   Data: SdkTransport.SubscriptionData<SdkTransport.SubscriptionTopic.ACCOUNT_STATUSES>
-  ArgsModel: AccountStatusesArgsModel
-  DataModel: AccountStatusesDataModel
+  ArgsDto: AccountStatusesArgsDto
+  DataDto: AccountStatusesDataDto
 }>({
   topic: SdkTransport.SubscriptionTopic.ACCOUNT_STATUSES,
   createSubscriber: (initialArgs, onData, onError) => {
@@ -42,7 +42,7 @@ export const accountStatusesHandler = createSubscriptionHandler<{
     }
 
     return {
-      sendData(data: AccountStatusesDataModel) {
+      onData(data: AccountStatusesDataDto) {
         // Parse the raw data
         const parsedData: AccountStatusesData = {
           accountStatus: {
@@ -70,11 +70,11 @@ export const accountStatusesHandler = createSubscriptionHandler<{
 
         onData(parsedData)
       },
-      sendError(error: Error) {
+      onError(error: Error) {
         onError(error)
       },
-      encodeArgs(args: AccountStatusesArgs) {
-        let encodedArgs: AccountStatusesArgsModel = {
+      argsToDto(args: AccountStatusesArgs) {
+        let encodedArgs: AccountStatusesArgsDto = {
           event_types: args.filter?.eventTypes,
           addresses: args.filter?.addresses,
           contracts: args.filter?.contracts,
