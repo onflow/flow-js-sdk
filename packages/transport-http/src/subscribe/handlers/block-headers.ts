@@ -1,15 +1,15 @@
 import {SdkTransport} from "@onflow/typedefs"
 import {BlockArgsModel, createSubscriptionHandler} from "./types"
 
-type BlockHeaderArgs =
+type BlockHeadersArgs =
   SdkTransport.SubscriptionArguments<SdkTransport.SubscriptionTopic.BLOCK_HEADERS>
 
-type BlockHeaderData =
+type BlockHeadersData =
   SdkTransport.SubscriptionData<SdkTransport.SubscriptionTopic.BLOCK_HEADERS>
 
-type BlockHeaderArgsModel = BlockArgsModel
+type BlockHeadersArgsDto = BlockArgsModel
 
-type BlockHeaderDataModel = {
+type BlockHeadersDataDto = {
   // TODO: We do not know the data model types yet
   header: {
     id: string
@@ -28,23 +28,23 @@ type BlockHeaderDataModel = {
   }
 }
 
-export const blockHeaderHandler = createSubscriptionHandler<{
+export const blockHeadersHandler = createSubscriptionHandler<{
   Topic: SdkTransport.SubscriptionTopic.BLOCK_HEADERS
-  Args: BlockHeaderArgs
-  Data: BlockHeaderData
-  ArgsModel: BlockHeaderArgsModel
-  DataModel: BlockHeaderDataModel
+  Args: BlockHeadersArgs
+  Data: BlockHeadersData
+  ArgsDto: BlockHeadersArgsDto
+  DataDto: BlockHeadersDataDto
 }>({
   topic: SdkTransport.SubscriptionTopic.BLOCK_HEADERS,
   createSubscriber: (initialArgs, onData, onError) => {
-    let resumeArgs: BlockHeaderArgs = {
+    let resumeArgs: BlockHeadersArgs = {
       ...initialArgs,
     }
 
     return {
-      sendData(data: BlockHeaderDataModel) {
+      onData(data: BlockHeadersDataDto) {
         // Parse the raw data
-        const parsedData: BlockHeaderData = {
+        const parsedData: BlockHeadersData = {
           // TODO: We do not know the data model types yet
           blockHeader: {
             id: data.header.id,
@@ -62,11 +62,11 @@ export const blockHeaderHandler = createSubscriptionHandler<{
 
         onData(parsedData)
       },
-      sendError(error: Error) {
+      onError(error: Error) {
         onError(error)
       },
-      encodeArgs(args: BlockHeaderArgs) {
-        let encodedArgs: BlockHeaderArgsModel = {
+      argsToDto(args: BlockHeadersArgs) {
+        let encodedArgs: BlockHeadersArgsDto = {
           block_status: args.blockStatus,
         }
 
