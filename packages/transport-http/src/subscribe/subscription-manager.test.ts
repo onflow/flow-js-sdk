@@ -18,7 +18,7 @@ jest.mock("./websocket", () => ({
   WebSocket: mockSocket,
 }))
 
-describe("WebSocket Manager", () => {
+describe("SubscriptionManager", () => {
   let mockWs: WS
   let mockSubscriber: jest.Mocked<DataSubscriber<any, any, any>>
   let mockHandler: jest.Mocked<SubscriptionHandler<any>>
@@ -29,9 +29,9 @@ describe("WebSocket Manager", () => {
 
     mockWs = new WS("wss://localhost:8080")
     mockSubscriber = {
-      sendData: jest.fn(),
-      sendError: jest.fn(),
-      encodeArgs: jest.fn().mockReturnValue(mockConnectionArgs),
+      onData: jest.fn(),
+      onError: jest.fn(),
+      argsToDto: jest.fn().mockReturnValue(mockConnectionArgs),
       get connectionArgs() {
         return mockConnectionArgs
       },
@@ -156,9 +156,9 @@ describe("WebSocket Manager", () => {
 
     await serverPromise
 
-    expect(mockSubscriber.sendData).toHaveBeenCalledTimes(1)
-    expect(mockSubscriber.sendData).toHaveBeenCalledWith({key: "value"})
-    expect(mockSubscriber.sendError).toHaveBeenCalledTimes(0)
+    expect(mockSubscriber.onData).toHaveBeenCalledTimes(1)
+    expect(mockSubscriber.onData).toHaveBeenCalledWith({key: "value"})
+    expect(mockSubscriber.onError).toHaveBeenCalledTimes(0)
 
     serverPromise = (async () => {
       const msg = (await mockWs.nextMessage) as string
@@ -232,9 +232,9 @@ describe("WebSocket Manager", () => {
 
     await serverPromise
 
-    expect(mockSubscriber.sendData).toHaveBeenCalledTimes(1)
-    expect(mockSubscriber.sendData).toHaveBeenCalledWith({key: "value"})
-    expect(mockSubscriber.sendError).toHaveBeenCalledTimes(0)
+    expect(mockSubscriber.onData).toHaveBeenCalledTimes(1)
+    expect(mockSubscriber.onData).toHaveBeenCalledWith({key: "value"})
+    expect(mockSubscriber.onError).toHaveBeenCalledTimes(0)
 
     // Close the connection and create a new one
     mockWs.close()
@@ -275,7 +275,7 @@ describe("WebSocket Manager", () => {
 
     await serverPromise
 
-    expect(mockSubscriber.sendData).toHaveBeenCalledTimes(2)
-    expect(mockSubscriber.sendData.mock.calls[1]).toEqual([{key: "value2"}])
+    expect(mockSubscriber.onData).toHaveBeenCalledTimes(2)
+    expect(mockSubscriber.onData.mock.calls[1]).toEqual([{key: "value2"}])
   })
 })

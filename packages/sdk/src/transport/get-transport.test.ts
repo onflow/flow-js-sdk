@@ -107,15 +107,7 @@ describe("getTransport", () => {
     })
   })
 
-  /**
-   * TODO: (jribbink) Figure out what to do with this logic.
-   *
-   * Currently, and previously, this logic is the reverse where the global config has priority over the custom transport.
-   * I disagree with this logic and believe that the custom transport should have priority over the global config.
-   * However, it would be a breaking change to change this logic.
-   *
-   */
-  /*test("custom transport has priority over global config", async () => {
+  test("custom transport has priority over global config", async () => {
     const customTransport = {
       send: jest.fn(),
       subscribe: jest.fn(),
@@ -131,5 +123,5 @@ describe("getTransport", () => {
     )
 
     expect(transport).toBe(customTransport)
-  })*/
+  })
 })

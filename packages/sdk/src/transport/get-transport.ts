@@ -19,12 +19,13 @@ export async function getTransport(
     `SDK Transport Error: Cannot provide both "transport" and legacy "send" options.`
   )
 
-  const transportOrSend = await config().first<
-    SdkTransport.Transport | SdkTransport.SendFn
-  >(
-    ["sdk.transport", "sdk.send"],
-    override.transport || override.send || defaultTransport
-  )
+  const transportOrSend =
+    override.transport ||
+    override.send ||
+    (await config().first<SdkTransport.Transport | SdkTransport.SendFn>(
+      ["sdk.transport", "sdk.send"],
+      defaultTransport
+    ))
 
   // Backwards compatibility with legacy send function
   if (!isTransportObject(transportOrSend)) {
@@ -44,5 +45,10 @@ export async function getTransport(
 function isTransportObject(
   transport: any
 ): transport is SdkTransport.Transport {
-  return transport.send !== undefined && transport.subscribe !== undefined
+  return (
+    transport.send !== undefined &&
+    transport.subscribe !== undefined &&
+    typeof transport.send === "function" &&
+    typeof transport.subscribe === "function"
+  )
 }
