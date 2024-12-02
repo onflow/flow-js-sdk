@@ -137,6 +137,66 @@ export type BlockDigest = {
    */
   timestamp: string
 }
+/**
+ * Header contains all meta-data for a block, as well as a hash representing
+ * the combined payload of the entire block. It is what consensus nodes agree
+ * on after validating the contents against the payload hash.
+ */
+// TODO: We do not know the data model types yet and are waiting for the AN team.
+export type BlockHeader = {
+  /**
+   * TA chain-specific value to prevent replay attacks.
+   */
+  chainId: string
+  /**
+   * - The id of the block
+   */
+  id: string
+  /**
+   * - The id of the parent block
+   */
+  parentId: string
+  /**
+   * - The height of the block
+   */
+  height: number
+  /**
+   * - The hash of the block's payload
+   */
+  payloadHash: string
+  /**
+   * - The timestamp of the block
+   */
+  timestamp: string
+  /**
+   * - The view of the block
+   */
+  view: number
+  /**
+   * - The view of the parent block
+   */
+  parentView: number
+  /**
+   * - The bitvector that represents all the voters for the parent block
+   */
+  parentVoterIndices: string
+  /**
+   * - The aggregated signature over the parent block
+   */
+  parentVoterSigData: string
+  /**
+   * - The proposer id of the block
+   */
+  proposerId: string
+  /**
+   * - The aggregated signature over the block
+   */
+  proposerSigData: string
+  /**
+   * - The last view timeout certificate
+   */
+  lastViewTC: any
+}
 export type CompositeSignature = {
   /**
    * - A type identifier used internally by FCL
