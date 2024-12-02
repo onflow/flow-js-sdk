@@ -2,20 +2,16 @@ import {config} from "@onflow/config"
 import {SdkTransport} from "@onflow/typedefs"
 import {getTransport} from "../get-transport"
 import {invariant} from "@onflow/util-invariant"
+import {SubscribeParams} from "./types"
 
-// TODO: OPTS FUNCTION
+/**
+ * Subscribe to a topic without decoding the data.
+ * @param params - The parameters for the subscription.
+ * @param opts - Additional options for the subscription.
+ * @returns A promise that resolves once the subscription is active.
+ */
 export async function rawSubscribe<T extends SdkTransport.SubscriptionTopic>(
-  {
-    topic,
-    args,
-    onData,
-    onError,
-  }: {
-    topic: T
-    args: SdkTransport.SubscriptionArguments<T>
-    onData: (data: SdkTransport.SubscriptionData<T>) => void
-    onError: (error: Error) => void
-  },
+  {topic, args, onData, onError}: SubscribeParams<T>,
   opts: {
     node?: string
     transport?: SdkTransport.Transport
@@ -29,7 +25,6 @@ export async function rawSubscribe<T extends SdkTransport.SubscriptionTopic>(
     `SDK Send Error: Either opts.node or "accessNode.api" in config must be defined.`
   )
 
-  // TODO: handle onError
   // Subscribe using the resolved transport
   return transport.subscribe(
     {
@@ -43,11 +38,4 @@ export async function rawSubscribe<T extends SdkTransport.SubscriptionTopic>(
       ...opts,
     }
   )
-}
-
-export function decode<T extends SdkTransport.SubscriptionTopic>(
-  topic: T,
-  data: SdkTransport.SubscriptionData<T>
-): any {
-  return data
 }

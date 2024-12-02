@@ -114,4 +114,4 @@ export {TestUtils}
 
 export {VERSION} from "./VERSION"
 
-export {subscribe} from "./transport"
+export {subscribe, rawSubscribe} from "./transport"

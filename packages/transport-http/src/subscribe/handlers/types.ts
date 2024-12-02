@@ -1,15 +1,10 @@
-export interface DataConsumer<Data> {
-  onData(data: Data): void
-  onError(error: Error): void
-}
-
 export interface SubscriptionHandler<
   T extends {
     Topic: string
     Args: any
     Data: any
-    DataModel: any
-    ArgsModel: any
+    ArgsDto: any
+    DataDto: any
   },
 > {
   readonly topic: T["Topic"]
@@ -17,24 +12,24 @@ export interface SubscriptionHandler<
     initialArgs: T["Args"],
     onData: (data: T["Data"]) => void,
     onError: (error: Error) => void
-  ): DataSubscriber<T["Args"], T["ArgsModel"], T["DataModel"]>
+  ): DataSubscriber<T["Args"], T["ArgsDto"], T["DataDto"]>
 }
 
-export interface DataSubscriber<Args, ArgsModel, Data> {
+export interface DataSubscriber<Args, ArgsDto, DataDto> {
   /**
    * The callback to call when a data is received
    */
-  sendData(data: Data): void
+  onData(data: DataDto): void
 
   /**
    * The callback to call when an error is received
    */
-  sendError(error: Error): void
+  onError(error: Error): void
 
   /**
    * The arguments to connect or reconnect to the subscription
    */
-  encodeArgs(args: Args): ArgsModel
+  argsToDto(args: Args): ArgsDto
 
   /**
    * Get the arguments to connect or reconnect to the subscription
@@ -47,8 +42,8 @@ export function createSubscriptionHandler<
     Topic: string
     Args: any
     Data: any
-    DataModel: any
-    ArgsModel: any
+    ArgsDto: any
+    DataDto: any
   },
 >(handler: SubscriptionHandler<T>): SubscriptionHandler<T> {
   return handler
