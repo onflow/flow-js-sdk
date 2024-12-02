@@ -48,3 +48,13 @@ export function createSubscriptionHandler<
 >(handler: SubscriptionHandler<T>): SubscriptionHandler<T> {
   return handler
 }
+
+export type BlockArgsModel =
+  | {
+      block_status?: number
+      start_block_id?: string
+    }
+  | {
+      block_status?: number
+      start_block_height?: number
+    }

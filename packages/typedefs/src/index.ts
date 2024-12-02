@@ -120,6 +120,23 @@ export type BlockSeal = {
    */
   executionReceiptId: string
 }
+/**
+ * BlockDigest holds lightweight block information which includes only block id, block height and block timestamp.
+ */
+export type BlockDigest = {
+  /**
+   * - The id of the block
+   */
+  id: string
+  /**
+   * - The height of the block
+   */
+  height: number
+  /**
+   * - Timestamp of the block
+   */
+  timestamp: string
+}
 export type CompositeSignature = {
   /**
    * - A type identifier used internally by FCL

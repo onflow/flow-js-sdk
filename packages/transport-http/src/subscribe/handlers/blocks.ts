@@ -1,5 +1,5 @@
 import {SdkTransport} from "@onflow/typedefs"
-import {createSubscriptionHandler} from "./types"
+import {createSubscriptionHandler, BlockArgsModel} from "./types"
 
 type BlocksArgs =
   SdkTransport.SubscriptionArguments<SdkTransport.SubscriptionTopic.BLOCKS>
