@@ -313,10 +313,6 @@ export type Transaction = {
    */
   keyId: number
   /**
-   * - The address of the proposer of this transaction.
-   */
-  address: string
-  /**
    * - Address of the payer of the transaction.
    */
   payer: string
