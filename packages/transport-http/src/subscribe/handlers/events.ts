@@ -7,7 +7,7 @@ type EventsArgs =
 type EventsData =
   SdkTransport.SubscriptionData<SdkTransport.SubscriptionTopic.EVENTS>
 
-export type EventsArgsModel = (
+export type EventsArgsDto = (
   | {
       start_block_id: string
     }
@@ -21,7 +21,7 @@ export type EventsArgsModel = (
   contracts?: string[]
 }
 
-type EventsDataModel = {
+type EventsDataDto = {
   block_id: string
   block_height: number
   block_timestamp: string
@@ -36,8 +36,8 @@ export const eventsHandler = createSubscriptionHandler<{
   Topic: SdkTransport.SubscriptionTopic.EVENTS
   Args: EventsArgs
   Data: EventsData
-  ArgsModel: EventsArgsModel
-  DataModel: EventsDataModel
+  ArgsDto: EventsArgsDto
+  DataDto: EventsDataDto
 }>({
   topic: SdkTransport.SubscriptionTopic.EVENTS,
   createSubscriber: (initialArgs, onData, onError) => {
@@ -46,7 +46,7 @@ export const eventsHandler = createSubscriptionHandler<{
     }
 
     return {
-      sendData(rawData: EventsDataModel) {
+      onData(rawData: EventsDataDto) {
         // Parse the raw data
         const result: EventsData = {
           event: {
@@ -70,11 +70,11 @@ export const eventsHandler = createSubscriptionHandler<{
 
         onData(result)
       },
-      sendError(error: Error) {
+      onError(error: Error) {
         onError(error)
       },
-      encodeArgs(args: EventsArgs) {
-        let encodedArgs: EventsArgsModel = {
+      argsToDto(args: EventsArgs) {
+        let encodedArgs: EventsArgsDto = {
           event_types: args.filter?.eventTypes,
           addresses: args.filter?.addresses,
           contracts: args.filter?.contracts,

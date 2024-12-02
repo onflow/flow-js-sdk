@@ -162,7 +162,7 @@ export class SubscriptionManager<
       })
 
       this.subscriptions.forEach(sub => {
-        sub.subscriber.sendError(
+        sub.subscriber.onError(
           new Error(
             `Failed to reconnect to the server after ${this.reconnectAttempts + 1} attempts: ${error}`
           )
@@ -318,7 +318,7 @@ export class SubscriptionManager<
     }
 
     // Send data to the subscriber
-    sub.subscriber.sendData(message.data)
+    sub.subscriber.onData(message.data)
   }
 
   private getHandler(topic: string) {
