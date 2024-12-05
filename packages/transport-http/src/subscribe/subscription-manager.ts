@@ -60,9 +60,7 @@ export interface SubscriptionManagerConfig {
   }
 }
 
-export class SubscriptionManager<
-  Handlers extends [...SubscriptionHandler<any>[]],
-> {
+export class SubscriptionManager<Handlers extends SubscriptionHandler<any>[]> {
   private counter = 0
   private socket: WebSocket | null = null
   private subscriptions: SubscriptionInfo<DataSubscriber<any, any, any>>[] = []
