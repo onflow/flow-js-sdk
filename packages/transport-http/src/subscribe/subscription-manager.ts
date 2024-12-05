@@ -22,7 +22,7 @@ type DeepRequired<T> = Required<{
 
 type InferHandler<T> = T extends SubscriptionHandler<infer H> ? H : never
 
-interface SubscriptionInfo<T extends DataSubscriber<any, any, any>> {
+interface SubscriptionInfo {
   // Internal ID for the subscription
   id: number
   // Remote ID assigned by the server used for message routing and unsubscribing
@@ -63,7 +63,7 @@ export interface SubscriptionManagerConfig {
 export class SubscriptionManager<Handlers extends SubscriptionHandler<any>[]> {
   private counter = 0
   private socket: WebSocket | null = null
-  private subscriptions: SubscriptionInfo<DataSubscriber<any, any, any>>[] = []
+  private subscriptions: SubscriptionInfo[] = []
   private config: DeepRequired<SubscriptionManagerConfig>
   private reconnectAttempts = 0
   private handlers: Record<string, SubscriptionHandler<any>>
@@ -203,7 +203,7 @@ export class SubscriptionManager<Handlers extends SubscriptionHandler<any>[]> {
     )
 
     // Track the subscription locally
-    const sub: SubscriptionInfo<DataSubscriber<any, any, any>> = {
+    const sub: SubscriptionInfo = {
       id: this.counter++,
       topic: opts.topic,
       subscriber: subscriber,
@@ -248,9 +248,7 @@ export class SubscriptionManager<Handlers extends SubscriptionHandler<any>[]> {
     }
   }
 
-  private async sendSubscribe(
-    sub: SubscriptionInfo<DataSubscriber<any, any, any>>
-  ) {
+  private async sendSubscribe(sub: SubscriptionInfo) {
     // Send the subscription message
     const request: SubscribeMessageRequest = {
       action: Action.SUBSCRIBE,
@@ -270,9 +268,7 @@ export class SubscriptionManager<Handlers extends SubscriptionHandler<any>[]> {
     return response
   }
 
-  private async sendUnsubscribe(
-    sub: SubscriptionInfo<DataSubscriber<any, any, any>>
-  ) {
+  private async sendUnsubscribe(sub: SubscriptionInfo) {
     // Send the unsubscribe message if the subscription has a remote id
     const {remoteId} = sub
     if (remoteId) {
