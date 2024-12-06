@@ -1,5 +1,8 @@
 import {SdkTransport} from "@onflow/typedefs"
 import {SubscriptionManager} from "./subscription-manager"
+import {blocksHandler} from "./handlers/blocks"
+
+const SUBSCRIPTION_HANDLERS = [blocksHandler]
 
 const SUBSCRIPTION_HANDLERS: any[] = []
 

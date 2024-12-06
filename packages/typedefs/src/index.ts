@@ -99,10 +99,6 @@ export type Block = {
    * - The details of which nodes executed and sealed the blocks
    */
   blockSeals: Array<BlockSeal>
-  /**
-   * - The cryptographic signature of the block
-   */
-  signatures: Array<number>
 }
 export type CollectionGuarantee = {
   /**
@@ -112,7 +108,7 @@ export type CollectionGuarantee = {
   /**
    * - The signer ids of the block
    */
-  signerIds: Array<object>
+  signerIds: Array<string>
 }
 export type BlockSeal = {
   /**
