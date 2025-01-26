@@ -1,8 +1,9 @@
 import {SdkTransport} from "@onflow/typedefs"
 import {SubscriptionManager} from "./subscription-manager"
 import {blocksHandler} from "./handlers/blocks"
+import {blockDigestsHandler} from "./handlers/block-digests"
 
-const SUBSCRIPTION_HANDLERS = [blocksHandler]
+const SUBSCRIPTION_HANDLERS = [blocksHandler, blockDigestsHandler]
 
 // Map of SubscriptionManager instances by access node URL
 let subscriptionManagerMap: Map<

@@ -1,28 +1,38 @@
-import {Block} from ".."
-
-type SchemaItem<TArgs, TData> = {
-  args: TArgs
-  data: TData
-}
-
-export enum SubscriptionTopic {
-  BLOCKS = "blocks",
-}
+import {Block, BlockDigest} from ".."
 
 export type SubscriptionSchema = {
   [SubscriptionTopic.BLOCKS]: SchemaItem<
-    | {
-        blockStatus?: number
-        startBlockId?: string
-      }
-    | {
-        blockStatus?: number
-        startBlockHeight?: number
-      },
+    BlockArgs,
     {
       block: Block
     }
   >
+  [SubscriptionTopic.BLOCK_DIGESTS]: SchemaItem<
+    BlockArgs,
+    {
+      blockDigest: BlockDigest
+    }
+  >
+}
+
+export enum SubscriptionTopic {
+  BLOCKS = "blocks",
+  BLOCK_DIGESTS = "block_digests",
+}
+
+type BlockArgs =
+  | {
+      blockStatus?: number
+      startBlockId?: string
+    }
+  | {
+      blockStatus?: number
+      startBlockHeight?: number
+    }
+
+type SchemaItem<TArgs, TData> = {
+  args: TArgs
+  data: TData
 }
 
 export type SubscriptionArguments<T extends SubscriptionTopic> =
