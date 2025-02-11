@@ -1,5 +1,11 @@
 # @onflow/fcl
 
+## 1.13.5
+
+### Patch Changes
+
+- [#2065](https://github.com/onflow/fcl-js/pull/2065) [`3fccbef7bbf985f19d9a9bae2638e538f126f754`](https://github.com/onflow/fcl-js/commit/3fccbef7bbf985f19d9a9bae2638e538f126f754) Thanks [@jribbink](https://github.com/jribbink)! - Fix args type for `fcl.query` & `fcl.mutate`
+
 ## 1.13.4
 
 ### Patch Changes

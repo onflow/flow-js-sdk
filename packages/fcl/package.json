@@ -1,6 +1,6 @@
 {
   "name": "@onflow/fcl",
-  "version": "1.13.4",
+  "version": "1.13.5",
   "description": "Flow Client Library",
   "license": "Apache-2.0",
   "author": "Flow Foundation",
@@ -49,8 +49,8 @@
   "dependencies": {
     "@babel/runtime": "^7.25.7",
     "@onflow/config": "1.5.1",
-    "@onflow/fcl-core": "1.13.4",
-    "@onflow/fcl-wc": "5.5.4",
+    "@onflow/fcl-core": "1.13.5",
+    "@onflow/fcl-wc": "5.5.5",
     "@onflow/interaction": "0.0.11",
     "@onflow/rlp": "1.2.3",
     "@onflow/sdk": "1.5.6",
