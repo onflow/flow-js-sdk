@@ -66,7 +66,6 @@
     "@walletconnect/types": "^2.13.2",
     "abort-controller": "^3.0.0",
     "cross-fetch": "^4.0.0",
-    "events": "^3.3.0",
-    "sha3": "^2.1.4"
+    "events": "^3.3.0"
   }
 }

@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.25.7",
+    "@noble/hashes": "^1.7.1",
     "@onflow/config": "1.5.1",
     "@onflow/rlp": "1.2.3",
     "@onflow/transport-http": "1.10.5",
@@ -52,7 +53,6 @@
     "@onflow/util-template": "1.2.3",
     "deepmerge": "^4.3.1",
     "events": "^3.3.0",
-    "sha3": "^2.1.4",
     "uuid": "^9.0.1"
   }
 }

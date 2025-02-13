@@ -36,5 +36,8 @@
     "@nx/nx-darwin-x64": "^17.3.2",
     "@nx/nx-linux-x64-gnu": "^17.3.2",
     "@nx/nx-win32-x64-msvc": "^17.3.2"
+  },
+  "dependencies": {
+    "@noble/hashes": "^1.7.1"
   }
 }

@@ -1,4 +1,5 @@
-import {SHA3} from "sha3"
+import {sha3_256} from "@noble/hashes/sha3"
+import {bytesToHex} from "@noble/hashes/utils"
 import {encode, Buffer, EncodeInput} from "@onflow/rlp"
 import {sansPrefix} from "@onflow/util-address"
 
@@ -7,7 +8,7 @@ export const encodeTransactionPayload = (tx: Transaction) =>
 export const encodeTransactionEnvelope = (tx: Transaction) =>
   prependTransactionDomainTag(rlpEncode(prepareEnvelope(tx)))
 export const encodeTxIdFromVoucher = (voucher: Voucher) =>
-  sha3_256(rlpEncode(prepareVoucher(voucher)))
+  sha3_256_hash(rlpEncode(prepareVoucher(voucher)))
 
 const rightPaddedHexBuffer = (value: string, pad: number) =>
   Buffer.from(value.padEnd(pad * 2, "0"), "hex")
@@ -35,10 +36,8 @@ const rlpEncode = (v: EncodeInput) => {
   return encode(v).toString("hex")
 }
 
-const sha3_256 = (msg: string) => {
-  const sha = new SHA3(256)
-  sha.update(Buffer.from(msg, "hex"))
-  return sha.digest().toString("hex")
+const sha3_256_hash = (msg: string) => {
+  return bytesToHex(sha3_256(Buffer.from(msg, "utf8")))
 }
 
 const preparePayload = (tx: Transaction) => {

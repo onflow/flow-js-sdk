@@ -1,8 +1,7 @@
-import {SHA3} from "sha3"
+import {sha3_256} from "@noble/hashes/sha3"
+import {bytesToHex} from "@noble/hashes/utils"
 import {Buffer} from "@onflow/rlp"
 
 export function genHash(utf8String) {
-  const sha = new SHA3(256)
-  sha.update(Buffer.from(utf8String, "utf8"))
-  return sha.digest("hex")
+  return bytesToHex(sha3_256(Buffer.from(utf8String, "utf8")))
 }
