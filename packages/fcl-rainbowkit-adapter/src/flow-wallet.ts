@@ -7,13 +7,13 @@ import * as fcl from "@onflow/fcl"
  * @param params
  * @returns
  */
-export const flowWallet = (params: {
-  user: typeof fcl.currentUser
-  config: typeof fcl.config
+export const flowWallet = (params?: {
+  user?: typeof fcl.currentUser
+  config?: typeof fcl.config
 }) =>
   createFclConnector({
-    user: params.user || fcl.currentUser,
-    config: params.config || fcl.config,
+    user: params?.user || fcl.currentUser,
+    config: params?.config || fcl.config,
     service: {
       f_type: "Service",
       f_vsn: "1.0.0",
