@@ -14,7 +14,7 @@
     "start": "fcl-bundle --watch"
   },
   "devDependencies": {
-    "@onflow/fcl-bundle": "1.6.0",
+    "@onflow/fcl-bundle": "1.7.0-cross-vm.0",
     "jest": "^29.7.0"
   },
   "dependencies": {

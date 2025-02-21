@@ -44,17 +44,14 @@ module.exports = function getInputOptions(package, build) {
     .concat(Object.keys(package.dependencies || {}))
 
   let testExternal = id => {
-    return (
-      build.type !== "umd" &&
-      (/@babel\/runtime/g.test(id) ||
-        external.reduce((state, ext) => {
-          return (
-            state ||
-            (ext instanceof RegExp && ext.test(id)) ||
-            (typeof ext === "string" && ext === id)
-          )
-        }, false))
-    )
+    if (build.type !== "umd" && /@babel\/runtime/g.test(id)) return true
+
+    for (let ext of external) {
+      if (ext instanceof RegExp && ext.test(id)) return true
+      if (typeof ext === "string" && id.startsWith(ext)) return true
+    }
+
+    return false
   }
 
   // exclude peer dependencies

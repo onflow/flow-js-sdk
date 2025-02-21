@@ -1,5 +1,15 @@
 # @onflow/fcl
 
+## 1.14.0-cross-vm.0
+
+### Minor Changes
+
+- [#2154](https://github.com/onflow/fcl-js/pull/2154) [`e8f5585cd029716940c55e72fc53dc9563fec724`](https://github.com/onflow/fcl-js/commit/e8f5585cd029716940c55e72fc53dc9563fec724) Thanks [@jribbink](https://github.com/jribbink)! - FCL Ethereum Provider & Cross VM Support Alpha Release
+
+### Patch Changes
+
+- [#2065](https://github.com/onflow/fcl-js/pull/2065) [`3fccbef7bbf985f19d9a9bae2638e538f126f754`](https://github.com/onflow/fcl-js/commit/3fccbef7bbf985f19d9a9bae2638e538f126f754) Thanks [@jribbink](https://github.com/jribbink)! - Fix args type for `fcl.query` & `fcl.mutate`
+
 ## 1.13.4
 
 ### Patch Changes

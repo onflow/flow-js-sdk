@@ -13,7 +13,7 @@
     "url": "https://github.com/onflow/fcl-js/issues"
   },
   "devDependencies": {
-    "@onflow/fcl-bundle": "1.6.0",
+    "@onflow/fcl-bundle": "1.7.0-cross-vm.0",
     "@onflow/rlp": "1.2.3",
     "@onflow/sdk": "1.5.6",
     "@onflow/types": "1.4.1",

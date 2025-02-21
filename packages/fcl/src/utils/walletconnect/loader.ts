@@ -99,11 +99,12 @@ ${lastConfig}`
     // We must lazy load the plugin to avoid race conditions
     // where the developer attempts to use the plugin before
     // our loader applies the configuration
-    const {clientPromise: _clientPromise, FclWcServicePlugin} = fclWc.initLazy({
-      projectId,
-      metadata: getMetadata(wcConfig),
-      disableNotifications: disableNotifications,
-    })
+    const {providerPromise: _clientPromise, FclWcServicePlugin} =
+      fclWc.initLazy({
+        projectId,
+        metadata: getMetadata(wcConfig),
+        disableNotifications: disableNotifications,
+      })
     pluginRegistry.add([FclWcServicePlugin])
   })
 }

@@ -165,9 +165,10 @@ const getAuthenticate =
    * @param {object} [opts] - Options
    * @param {object} [opts.service] - Optional service to use for authentication
    * @param {boolean} [opts.redir] - Optional redirect flag
+   * @param {boolean} [opts.forceReauth] - Optional force re-authentication flag
    * @returns
    */
-  async ({service, redir = false} = {}) => {
+  async ({service, redir = false, forceReauth = false} = {}) => {
     if (
       service &&
       !service?.provider?.is_installed &&
@@ -185,7 +186,7 @@ const getAuthenticate =
       const refreshService = serviceOfType(user.services, "authn-refresh")
       let accountProofData
 
-      if (user.loggedIn) {
+      if (user.loggedIn && !forceReauth) {
         if (refreshService) {
           try {
             const response = await execService({

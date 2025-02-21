@@ -1,0 +1,32 @@
+{
+  "mode": "pre",
+  "tag": "cross-vm",
+  "initialVersions": {
+    "@onflow/config": "1.5.1",
+    "@onflow/fcl": "1.13.4",
+    "@onflow/fcl-bundle": "1.6.0",
+    "@onflow/fcl-core": "1.13.4",
+    "@onflow/fcl-ethereum-provider": "0.0.0",
+    "@onflow/fcl-rainbowkit-adapter": "0.0.0",
+    "@onflow/fcl-react-native": "1.9.11",
+    "@onflow/fcl-wagmi-adapter": "0.0.0",
+    "@onflow/fcl-wc": "5.5.4",
+    "@onflow/protobuf": "1.3.1",
+    "@onflow/rlp": "1.2.3",
+    "@onflow/sdk": "1.5.6",
+    "@onflow/transport-grpc": "1.4.2-alpha.0",
+    "@onflow/transport-http": "1.10.5",
+    "@onflow/typedefs": "1.4.0",
+    "@onflow/types": "1.4.1",
+    "@onflow/util-actor": "1.3.4",
+    "@onflow/util-address": "1.2.3",
+    "@onflow/util-encode-key": "1.2.4",
+    "@onflow/util-invariant": "1.2.4",
+    "@onflow/util-logger": "1.3.3",
+    "@onflow/util-rpc": "0.0.2",
+    "@onflow/util-semver": "1.0.3",
+    "@onflow/util-template": "1.2.3",
+    "@onflow/util-uid": "1.2.3"
+  },
+  "changesets": ["chilled-wombats-reply", "shaggy-carpets-eat"]
+}

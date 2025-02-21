@@ -2,25 +2,31 @@ import {invariant} from "@onflow/util-invariant"
 import {log, LEVELS} from "@onflow/util-logger"
 import {isMobile, openDeeplink, preloadImage, shouldDeepLink} from "./utils"
 import {
+  FLOW_METHODS,
   REQUEST_TYPES,
   SERVICE_PLUGIN_NAME,
   WC_SERVICE_METHOD,
 } from "./constants"
-import {SignClient} from "@walletconnect/sign-client/dist/types/client"
 import {createSessionProposal, request} from "./session"
-import {ModalCtrlState} from "@walletconnect/modal-core/dist/_types/src/types/controllerTypes"
 import {showNotification} from "./ui/notifications"
 import type {FclWalletConnectConfig} from "./fcl-wc"
 import mobileIcon from "./ui/assets/mobile.svg"
 import {CurrentUser, Service} from "@onflow/typedefs"
 import {SessionTypes} from "@walletconnect/types"
+import {UniversalProvider} from "@walletconnect/universal-provider"
+import {createStore} from "./store"
+import {ModalCtrlState} from "@walletconnect/modal-core/dist/_types/src/types/controllerTypes"
 
 type WalletConnectModalType = import("@walletconnect/modal").WalletConnectModal
 
 type Constructor<T> = new (...args: any[]) => T
 
+let providerStore = createStore<{
+  [key: string]: InstanceType<typeof UniversalProvider>
+}>({})
+
 export const makeServicePlugin = (
-  client: Promise<SignClient | null>,
+  provider: Promise<InstanceType<typeof UniversalProvider> | null>,
   config: FclWalletConnectConfig = {
     projectId: "",
     includeBaseWC: false,
@@ -36,7 +42,7 @@ export const makeServicePlugin = (
   serviceStrategy: {
     method: WC_SERVICE_METHOD,
     exec: makeExec(
-      client,
+      provider,
       config,
       import("@walletconnect/modal").then(m => m.WalletConnectModal)
     ),
@@ -45,7 +51,7 @@ export const makeServicePlugin = (
 })
 
 const makeExec = (
-  clientPromise: Promise<SignClient | null>,
+  signerPromise: Promise<InstanceType<typeof UniversalProvider> | null>,
   config: FclWalletConnectConfig,
   WalletConnectModal: Promise<Constructor<WalletConnectModalType>>
 ) => {
@@ -71,22 +77,25 @@ const makeExec = (
       disableNotifications: appDisabledNotifications,
     } = config
 
-    const client = await clientPromise
-    invariant(!!client, "WalletConnect is not initialized")
+    const resolvedProvider = await resolveProvider({
+      provider: signerPromise,
+      externalProviderOrTopic: service.params?.externalProvider,
+    })
+    invariant(!!resolvedProvider, "WalletConnect is not initialized")
 
-    let session: SessionTypes.Struct | null = null,
+    const {provider: provider, isExternal} = resolvedProvider
+
+    let session: SessionTypes.Struct | null = provider.session ?? null,
       pairing: any
     const method = service.endpoint
     const appLink = validateAppLink(service)
-    const pairings = client.pairing.getAll({active: true})
 
-    if (pairings.length > 0) {
-      pairing = pairings?.find(p => p.peerMetadata?.url === service.uid)
-    }
-
-    if (client.session.length > 0) {
-      const lastKeyIndex = client.session.keys.length - 1
-      session = client.session.get(client.session.keys.at(lastKeyIndex)!)
+    // If the user is already connected to this session, use it
+    if (
+      session?.topic === service.params?.externalProvider &&
+      method === FLOW_METHODS.FLOW_AUTHN
+    ) {
+      return user
     }
 
     if (session == null) {
@@ -99,7 +108,7 @@ const makeExec = (
           service,
           onClose,
           appLink,
-          client,
+          provider,
           method,
           pairing,
           wcRequestHook,
@@ -143,8 +152,9 @@ const makeExec = (
       method,
       body,
       session,
-      client,
+      provider,
       abortSignal,
+      isExternal,
     }).finally(() => notification?.dismiss())
 
     function validateAppLink({uid}: {uid: string}) {
@@ -168,7 +178,7 @@ function connectWc(
     service,
     onClose,
     appLink,
-    client,
+    provider,
     method,
     pairing,
     wcRequestHook,
@@ -178,14 +188,14 @@ function connectWc(
     service: any
     onClose: any
     appLink: string
-    client: SignClient
+    provider: InstanceType<typeof UniversalProvider>
     method: string
     pairing: any
     wcRequestHook: any
     pairingModalOverride: any
     abortSignal?: AbortSignal
   }): Promise<SessionTypes.Struct> => {
-    const projectId = client.opts?.projectId
+    const projectId = provider.providerOpts.projectId
     invariant(
       !!projectId,
       "Cannot establish connection, WalletConnect projectId is undefined"
@@ -196,10 +206,9 @@ function connectWc(
 
     try {
       const {uri, approval} = await createSessionProposal({
-        client,
+        provider,
         existingPairing: pairing,
       })
-      _uri = uri
 
       if (wcRequestHook && wcRequestHook instanceof Function) {
         wcRequestHook({
@@ -253,6 +262,11 @@ function connectWc(
           })
         }),
       ])
+
+      if (session == null) {
+        throw new Error("Session request failed")
+      }
+
       return session
     } catch (error) {
       if (error instanceof Error) {
@@ -268,7 +282,7 @@ function connectWc(
       onClose()
       throw error
     } finally {
-      walletConnectModal?.closeModal()
+      // walletConnectModal?.closeModal()
     }
   }
 }
@@ -299,4 +313,71 @@ export function showWcRequestNotification({
       isMobile() && service.uid ? () => openDeeplink(service.uid!) : undefined,
     debounceDelay: service.type === "pre-authz" ? 500 : 0,
   })
+}
+
+async function resolveProvider({
+  provider,
+  externalProviderOrTopic,
+}: {
+  provider: Promise<InstanceType<typeof UniversalProvider> | null>
+  externalProviderOrTopic?: string | InstanceType<typeof UniversalProvider>
+}): Promise<{
+  provider: InstanceType<typeof UniversalProvider>
+  isExternal: boolean
+} | null> {
+  if (!externalProviderOrTopic) {
+    const resolved = await provider
+    return resolved ? {provider: resolved, isExternal: false} : null
+  }
+
+  // If it's a UniversalProvider instance, use it directly and store it.
+  if (typeof externalProviderOrTopic !== "string") {
+    const topic = externalProviderOrTopic.session?.topic
+    if (!topic) {
+      throw new Error(
+        "Cannot resolve provider: UniversalProvider is not initialized"
+      )
+    }
+    providerStore.setState({
+      [topic]: externalProviderOrTopic,
+    })
+    return {provider: externalProviderOrTopic, isExternal: true}
+  }
+
+  const externalTopic = externalProviderOrTopic
+  if (externalTopic) {
+    // Check if an external provider was passed in the options.
+    let storedProvider = providerStore.getState()[externalTopic]
+    if (!storedProvider) {
+      // No provider from opts and nothing in store yet—wait for it.
+      let unsubStore: () => void
+      let timeout: NodeJS.Timeout
+
+      storedProvider = await new Promise<any>((resolve, reject) => {
+        unsubStore = providerStore.subscribe(() => {
+          const provider = providerStore.getState()[externalTopic]
+          if (provider) {
+            resolve(provider)
+          }
+        })
+
+        // If the provider is not defined after 5 seconds, reject the promise.
+        timeout = setTimeout(() => {
+          reject(
+            new Error(
+              `Provider for external topic ${externalTopic} not found after 5 seconds`
+            )
+          )
+        }, 5000)
+      }).finally(() => {
+        clearTimeout(timeout)
+        unsubStore()
+      })
+    }
+
+    return {provider: storedProvider, isExternal: true}
+  }
+
+  const resolved = await provider
+  return resolved ? {provider: resolved, isExternal: false} : null
 }

@@ -13,7 +13,7 @@
     "url": "https://github.com/onflow/fcl-js/issues"
   },
   "devDependencies": {
-    "@onflow/fcl-bundle": "1.6.0",
+    "@onflow/fcl-bundle": "1.7.0-cross-vm.0",
     "@types/node": "^18.19.57",
     "eslint": "^8.57.1",
     "eslint-plugin-jsdoc": "^46.10.1",

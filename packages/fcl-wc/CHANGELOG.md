@@ -1,5 +1,16 @@
 # @onflow/fcl-wc
 
+## 6.0.0-cross-vm.0
+
+### Major Changes
+
+- [#2154](https://github.com/onflow/fcl-js/pull/2154) [`e8f5585cd029716940c55e72fc53dc9563fec724`](https://github.com/onflow/fcl-js/commit/e8f5585cd029716940c55e72fc53dc9563fec724) Thanks [@jribbink](https://github.com/jribbink)! - FCL Ethereum Provider & Cross VM Support Alpha Release
+
+### Patch Changes
+
+- Updated dependencies [[`3fccbef7bbf985f19d9a9bae2638e538f126f754`](https://github.com/onflow/fcl-js/commit/3fccbef7bbf985f19d9a9bae2638e538f126f754), [`e8f5585cd029716940c55e72fc53dc9563fec724`](https://github.com/onflow/fcl-js/commit/e8f5585cd029716940c55e72fc53dc9563fec724)]:
+  - @onflow/fcl-core@1.14.0-cross-vm.0
+
 ## 5.5.4
 
 ### Patch Changes

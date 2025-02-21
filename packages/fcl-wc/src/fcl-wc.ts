@@ -1,10 +1,13 @@
 import * as fclCore from "@onflow/fcl-core"
-import SignClient from "@walletconnect/sign-client"
 import {invariant} from "@onflow/util-invariant"
 import {LEVELS, log} from "@onflow/util-logger"
 export {getSdkError} from "@walletconnect/utils"
 import {makeServicePlugin} from "./service"
 import {CoreTypes} from "@walletconnect/types"
+import {
+  UniversalProvider,
+  UniversalProviderOpts,
+} from "@walletconnect/universal-provider"
 
 export interface FclWalletConnectConfig {
   projectId: string
@@ -18,7 +21,8 @@ export interface FclWalletConnectConfig {
 
 const DEFAULT_RELAY_URL = "wss://relay.walletconnect.com"
 const DEFAULT_LOGGER = "debug"
-let clientPromise: Promise<SignClient | null> = Promise.resolve(null)
+let providerPromise: Promise<InstanceType<typeof UniversalProvider> | null> =
+  Promise.resolve(null)
 
 const initClient = async ({
   projectId,
@@ -32,7 +36,7 @@ const initClient = async ({
     "FCL Wallet Connect Error: WalletConnect projectId is required"
   )
   try {
-    return SignClient.init({
+    return UniversalProvider.init({
       logger: DEFAULT_LOGGER,
       relayUrl: DEFAULT_RELAY_URL,
       projectId: projectId,
@@ -50,19 +54,23 @@ const initClient = async ({
   }
 }
 
+const initUniversalProvider = async (opts: UniversalProviderOpts) => {
+  return UniversalProvider.init({})
+}
+
 export const initLazy = (config: FclWalletConnectConfig) => {
-  const {FclWcServicePlugin, clientPromise} = initHelper(config)
+  const {FclWcServicePlugin, providerPromise} = initHelper(config)
   fclCore.discovery.authn.update()
 
   return {
     FclWcServicePlugin,
-    clientPromise,
+    providerPromise,
   }
 }
 
 export const init = async (config: FclWalletConnectConfig) => {
-  const {FclWcServicePlugin, clientPromise} = initLazy(config)
-  const client = await clientPromise
+  const {FclWcServicePlugin, providerPromise} = initLazy(config)
+  const client = await providerPromise
   fclCore.discovery.authn.update()
 
   return {
@@ -82,7 +90,7 @@ const initHelper = (config: FclWalletConnectConfig) => {
   //  - Initialize the client if it doesn't exist
   //  - If it does exist, return existing client
   //  - If existing client fails to initialize, reinitialize
-  clientPromise = Promise.resolve(clientPromise)
+  providerPromise = providerPromise
     .catch(() => null)
     .then(_client => {
       if (_client) {
@@ -103,22 +111,22 @@ const initHelper = (config: FclWalletConnectConfig) => {
       throw e
     })
 
-  const FclWcServicePlugin = makeServicePlugin(clientPromise, config)
+  const FclWcServicePlugin = makeServicePlugin(providerPromise, config)
 
   return {
     FclWcServicePlugin,
-    clientPromise,
+    providerPromise,
   }
 }
 
 // Returns the SignClient instance used by this plugin if it has been initialized
-export async function getSignClient() {
-  return clientPromise.then(client => {
-    if (!client) {
+export async function getProvider() {
+  return providerPromise.then(provider => {
+    if (!provider) {
       throw new Error("WalletConnect client not initialized")
     }
 
-    return client
+    return provider
   })
 }
 

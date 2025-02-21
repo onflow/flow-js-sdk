@@ -1,6 +1,6 @@
 {
   "name": "@onflow/fcl-core",
-  "version": "1.13.4",
+  "version": "1.14.0-cross-vm.0",
   "description": "Flow Client Library",
   "license": "Apache-2.0",
   "author": "Flow Foundation",
@@ -19,7 +19,7 @@
     }
   },
   "devDependencies": {
-    "@onflow/fcl-bundle": "1.6.0",
+    "@onflow/fcl-bundle": "1.7.0-cross-vm.0",
     "@onflow/typedefs": "1.4.0",
     "@types/estree": "^1.0.6",
     "@types/jest": "^29.5.13",

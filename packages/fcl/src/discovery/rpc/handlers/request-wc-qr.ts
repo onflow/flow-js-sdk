@@ -1,7 +1,7 @@
 import {
   createSessionProposal,
   FLOW_METHODS,
-  getSignClient,
+  getProvider,
   request as wcRequest,
 } from "@onflow/fcl-wc"
 import {DiscoveryNotification, DiscoveryRpc} from "../requests"
@@ -28,11 +28,11 @@ export const wcRequestHandlerFactory = ({
       throw new Error("Handler has been terminated")
     }
 
-    const client = await getSignClient()
+    const provider = await getProvider()
 
     // Execute WC bypass if session is approved
     const {uri, approval} = await createSessionProposal({
-      client,
+      provider,
     })
 
     // Watch for QR code connection asynchronously
@@ -65,7 +65,7 @@ export function watchQrFactory({
     // Watch for QR code connection & resolve callback if connected
     setTimeout(async () => {
       try {
-        const client = await getSignClient()
+        const provider = await getProvider()
         const session = await approval()
         rpc.notify(DiscoveryNotification.NOTIFY_QRCODE_CONNECTING, {
           uri,
@@ -75,7 +75,7 @@ export function watchQrFactory({
           method: FLOW_METHODS.FLOW_AUTHN,
           body: authnBody,
           session,
-          client,
+          provider,
         })
 
         rpc.notify(DiscoveryNotification.NOTIFY_QRCODE_CONNECTED, {

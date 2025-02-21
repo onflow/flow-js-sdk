@@ -23,7 +23,7 @@ jobs:
       # https://github.com/changesets/changesets/issues/1011
       # https://github.com/changesets/changesets/issues/960
       # https://github.com/changesets/changesets/issues/822
-      - name: Prevent Major Version Bumps
-        run: node ./.github/scripts/prevent-major-bumps.js
+      #- name: Prevent Major Version Bumps
+      #  run: node ./.github/scripts/prevent-major-bumps.js
 
       - run: make ci

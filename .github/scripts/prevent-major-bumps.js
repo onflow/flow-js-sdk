@@ -26,9 +26,15 @@ for (const packageJson of packageJsons) {
   const newVersion = newPackageJson.version
 
   // Get the version from the main branch (or latest release)
-  const prevPackageJson = JSON.parse(
-    execSync(`git show origin/master:${packageJson}`).toString()
-  )
+  let prevPackageJson
+  try {
+    prevPackageJson = JSON.parse(
+      execSync(`git show origin/master:${packageJson}`).toString()
+    )
+  } catch (error) {
+    console.info("Skipping new package", newPackageName)
+    continue
+  }
   const prevPackageName = prevPackageJson.name
   const prevVersion = prevPackageJson.version
 
