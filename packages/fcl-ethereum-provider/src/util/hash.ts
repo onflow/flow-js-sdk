@@ -2,7 +2,7 @@ import {keccak_256} from "@noble/hashes/sha3"
 import {bytesToHex} from "@noble/hashes/utils"
 import {arrayify, concat} from "@ethersproject/bytes"
 import {_TypedDataEncoder as TypedDataEncoder} from "@ethersproject/hash"
-import {TypedData} from "./types/eth"
+import {TypedData} from "../types/eth"
 
 export function hashTypedDataLegacy(data: TypedData): string {
   throw new Error(
@@ -18,11 +18,12 @@ export function hashTypedDataLegacy(data: TypedData): string {
  */
 export function hashTypedDataV3(data: TypedData): string {
   const domainSeparator = TypedDataEncoder.hashDomain(data.domain)
-  const messageHash = TypedDataEncoder.hash(
-    data.domain,
-    data.types,
-    data.message
-  )
+
+  // Clone the types and remove the EIP712Domain entry if it exists.
+  const types = {...data.types}
+  delete types.EIP712Domain
+
+  const messageHash = TypedDataEncoder.hash(data.domain, types, data.message)
   // The EIP‑191 prefix is "0x1901".
   const prefix = "0x1901"
   const digest = keccak_256(

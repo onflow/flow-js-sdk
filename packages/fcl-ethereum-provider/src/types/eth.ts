@@ -2,10 +2,10 @@ export type EthSignatureResponse = string
 
 export type PersonalSignParams = [string, string]
 
-export interface SignTypedDataParams {
-  address: string
-  data: TypedData // This represents the EIP-712 structured data
-}
+export type SignTypedDataParams = [
+  address: string,
+  data: string | TypedData, // This represents the EIP-712 structured data, may be serialized or not
+]
 
 export interface TypedDataField {
   name: string

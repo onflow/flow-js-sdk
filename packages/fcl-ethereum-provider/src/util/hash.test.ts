@@ -2,12 +2,8 @@ import {keccak_256} from "@noble/hashes/sha3"
 import {bytesToHex} from "@noble/hashes/utils"
 import {concat, arrayify} from "@ethersproject/bytes"
 import {_TypedDataEncoder as TypedDataEncoder} from "@ethersproject/hash"
-import {TypedData} from "./types/eth"
-import {
-  hashTypedDataLegacy,
-  hashTypedDataV3,
-  hashTypedDataV4,
-} from "./hash-utils"
+import {TypedData} from "../types/eth"
+import {hashTypedDataLegacy, hashTypedDataV3, hashTypedDataV4} from "./hash"
 
 jest.mock("@noble/hashes/sha3", () => ({
   keccak_256: jest.fn(() =>

@@ -44,28 +44,7 @@ export class RpcProcessor {
         case "eth_signTypedData":
         case "eth_signTypedData_v3":
         case "eth_signTypedData_v4": {
-          if (!params || typeof params !== "object") {
-            throw new Error(`${method} requires valid parameters.`)
-          }
-
-          const {address, data} = params as {address?: unknown; data?: unknown}
-
-          if (
-            typeof address !== "string" ||
-            typeof data !== "object" ||
-            data === null
-          ) {
-            throw new Error(
-              `${method} requires 'address' (string) and a valid 'data' object.`
-            )
-          }
-
-          const validParams: SignTypedDataParams = {
-            address,
-            data: data as TypedData,
-          }
-
-          return await signTypedData(this.accountManager, validParams, method)
+          return await signTypedData(this.accountManager, params, method)
         }
         case "personal_sign":
           return await personalSign(

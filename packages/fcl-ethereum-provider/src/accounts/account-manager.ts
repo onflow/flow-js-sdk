@@ -334,8 +334,9 @@ export class AccountManager {
     }
 
     try {
-      const response: CompositeSignature[] =
-        await this.user.signUserMessage(message)
+      const response: CompositeSignature[] = await this.user.signUserMessage(
+        fcl.sansPrefix(message)
+      )
 
       if (!response || response.length === 0) {
         throw new Error("Failed to sign message")

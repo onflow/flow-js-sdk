@@ -1,21 +1,17 @@
 import {AccountManager} from "../../accounts/account-manager"
-import {SignTypedDataParams} from "../../types/eth"
+import {SignTypedDataParams, TypedData} from "../../types/eth"
 import {
   hashTypedDataLegacy,
   hashTypedDataV3,
   hashTypedDataV4,
-} from "../../hash-utils"
+} from "../../util/hash"
 
 export async function signTypedData(
   accountManager: AccountManager,
-  params: SignTypedDataParams,
+  params: unknown,
   version: "eth_signTypedData" | "eth_signTypedData_v3" | "eth_signTypedData_v4"
 ) {
-  const {address, data} = params
-
-  if (!address || !data) {
-    throw new Error("Missing signer address or typed data")
-  }
+  const {address, data} = parseParams(params, version)
 
   let hashedMessage: string
   if (version === "eth_signTypedData_v3") {
@@ -27,4 +23,25 @@ export async function signTypedData(
   }
 
   return await accountManager.signMessage(hashedMessage, address)
+}
+
+function parseParams(
+  params: unknown,
+  version: "eth_signTypedData" | "eth_signTypedData_v3" | "eth_signTypedData_v4"
+): {address: string; data: TypedData} {
+  try {
+    if (!params || typeof params !== "object") {
+      throw new Error(`${version} requires valid parameters.`)
+    }
+
+    const [address, data] = params as [unknown, unknown]
+
+    if (typeof data !== "object") {
+      return {address: address as string, data: JSON.parse(data as string)}
+    } else {
+      return {address: address as string, data: data as TypedData}
+    }
+  } catch (error) {
+    throw new Error(`${version} requires valid parameters.`)
+  }
 }
